@@ -96,7 +96,7 @@ names(stepsEachInterval) <- c("interval", "mean_steps")
 ```
 
 Now, let's plot the mean number of steps per interval using R's base plotting system.
-```{r}
+```{r firstplot, fig.height = 4, fig.width = 6}
 # Base plot without x axis
 plot(stepsEachInterval$mean_steps, xlab = "time interval", ylab = "mean no. of steps", main ="Mean number of steps per interval", type = "l", xaxt = "n", col="blue", )
 # Add an x axis
@@ -239,7 +239,7 @@ the average number of steps taken, averaged across all weekday days or weekend d
 
 
 Now, we generate the plot, using the base plotting system. 
-```{r}
+```{r secondplot, fig.height = 4, fig.width = 6}
 par(mfrow = c(1, 2))
 # First plot
 plot(subset(stepsPerInterval2, weekend == FALSE)$mean_steps, xlab = "interval", ylab = "mean number of steps", main ="Weekdays", type = "l", col="blue", xaxt = "n", ylim = c(0, 250))
