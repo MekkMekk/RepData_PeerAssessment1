@@ -20,20 +20,11 @@ this dataset.
 The original questions for this assignment are in bold font below. 
 
 
-Let's load the required package(s) for this assignment:
-```{r}
-library(knitr)
-```
-
-
-```{r opt_chunk$set(echo = TRUE)}
-```
-
-
 # Loading and preprocessing the data    
 <br>
 Now, we load the data, and convert the date column to a date variable.  
-```{r}
+
+```r
 data <- read.table("./activity.csv", sep =",", header = TRUE)
 # convert the data column to a date class
 data$date <- as.Date(data$date)
@@ -41,8 +32,18 @@ data$date <- as.Date(data$date)
 
 <br>
 Let's look at the first 5 rows so we know how the data looks like:
-```{r}
+
+```r
 head(data, n=5)
+```
+
+```
+##   steps       date interval
+## 1    NA 2012-10-01        0
+## 2    NA 2012-10-01        5
+## 3    NA 2012-10-01       10
+## 4    NA 2012-10-01       15
+## 5    NA 2012-10-01       20
 ```
 
 # What is mean total number of steps taken per day?
@@ -50,7 +51,8 @@ head(data, n=5)
 **Calculate the total number of steps taken per day**  
 
 To answer this question, we use the *aggregate* function to generate a data frame with the total number of steps taken every day.  
-```{r}
+
+```r
 totalstepsperday <- aggregate(data$steps,by=list(data$date),FUN=sum)
 # to tidy things up, we rename the columns of the data frame that we have generated
 names(totalstepsperday) <- c("date", "total_steps")
@@ -60,9 +62,12 @@ names(totalstepsperday) <- c("date", "total_steps")
 **Make a histogram of the total number of steps taken each day**  
 
 To answer this question, we use R's *hist* function. 
-```{r}
+
+```r
 hist(totalstepsperday$total_steps, main = "Total Number of Steps per Day", xlab = "Number of Steps")
 ```
+
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
 <br>
 **Calculate and report the mean and median of the total number of steps taken per day**
@@ -70,12 +75,22 @@ hist(totalstepsperday$total_steps, main = "Total Number of Steps per Day", xlab 
 Let's use R's *mean* and *median* function for this. Alternatively, we could also use the *summary* function.
 
 Mean:
-```{r}
+
+```r
 mean(totalstepsperday$total_steps, na.rm = TRUE)
 ```
+
+```
+## [1] 10766.19
+```
 Median:
-```{r}
+
+```r
 median(totalstepsperday$total_steps, na.rm = TRUE)
+```
+
+```
+## [1] 10765
 ```
 
 
@@ -88,7 +103,8 @@ median(totalstepsperday$total_steps, na.rm = TRUE)
 
 
 First, let's compute the average number of steps for each 5-minute interval in the data. 
-```{r}
+
+```r
 # Let's use the aggregate function to compute the mean of the number of steps for every interval in the data 
 stepsEachInterval <- aggregate(data$steps, by = list(data$interval), FUN = mean, na.rm = TRUE)
 # to tidy things up, we rename the columns of the data frame that we have generated
@@ -96,7 +112,8 @@ names(stepsEachInterval) <- c("interval", "mean_steps")
 ```
 
 Now, let's plot the mean number of steps per interval using R's base plotting system.
-```{r firstplot, fig.height = 4, fig.width = 6}
+
+```r
 # Base plot without x axis
 plot(stepsEachInterval$mean_steps, xlab = "time interval", ylab = "mean no. of steps", main ="Mean number of steps per interval", type = "l", xaxt = "n", col="blue", )
 # Add an x axis
@@ -105,14 +122,21 @@ at <- sapply(labels, function(z) which(stepsEachInterval$interval == z))
 axis(1, at = at, labels = labels)
 ```
 
+![plot of chunk firstplot](figure/firstplot-1.png) 
+
 
 <br>
 **Which 5-minute interval, on average across all the days in the dataset, contains the maximum number
 of steps?**
 
 The following code calculates and prints the interval for which the average number of steps is the highest. 
-```{r}
+
+```r
 stepsEachInterval$interval[which.max(stepsEachInterval$mean_steps)]
+```
+
+```
+## [1] 835
 ```
 
 
@@ -128,12 +152,18 @@ Note that there are a number of days/intervals where there are missing values (c
 
 
 Let's first compute the number of NAs in the original data set:
-```{r}
+
+```r
 sum(is.na(data$steps))
 ```
 
+```
+## [1] 2304
+```
+
 As a preliminary step, we produce a version of the data set that contains only the complete data.
-```{r}
+
+```r
 datComplete <- subset(data, !is.na(steps))
 ```
 
@@ -148,7 +178,8 @@ My imputation strategy is not very sophisticated, but should suffice for the pur
 <br>
 **Create a new dataset that is equal to the original dataset but with the missing data filled in.**
 
-```{r}
+
+```r
 # Copy the data frame to which the imputed values will be added
 imputedData <- data
 # All unique intervals that occur in the sample
@@ -170,39 +201,73 @@ number of steps?**
 
 First, let's compute the total number of steps per day for the imputed dataset and show the summary statistics which contain the mean and the median steps taken per day. 
 
-```{r}
+
+```r
 # Sum of steps for every day in the imputed data 
 stepsPerDayImputed <- aggregate(imputedData$steps, by = list(imputedData$date), FUN = sum)
 # Rename the columns of the data frame generated
 names(stepsPerDayImputed) <- c("date", "total_Steps")
 # make histogram of the total number of steps taken each day
 hist(stepsPerDayImputed$total_Steps, main = "Total Number of Steps per Day - Imputed data", xlab = "Number of Steps")
+```
+
+![plot of chunk unnamed-chunk-12](figure/unnamed-chunk-12-1.png) 
+
+```r
 # Show summary stats
 summary(stepsPerDayImputed$total_Steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    9819   10770   10770   12810   21190
 ```
 
 The resulting data shows that the values of the imputed data set slightly differ from the estimates from the first part of the assignment. 
 
 The summary statistics including the mean and median total steps from the first part of the assignment are:
 
-```{r}
+
+```r
 summary(totalstepsperday$total_steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max.    NA's 
+##      41    8841   10760   10770   13290   21190       8
 ```
 
 
 For the NA-imputed data set, the summary statistics including the mean and median are:
-```{r}
+
+```r
 summary(stepsPerDayImputed$total_Steps)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    9819   10770   10770   12810   21190
 ```
 
 The impact of imputing missing data on the estimates of the total daily number of steps is zero for the mean value and 0.11% for the median value :
 
-```{r}
+
+```r
 impact_mean <- mean(totalstepsperday$total_steps, na.rm = TRUE)/ mean(stepsPerDayImputed$total_Steps)
 impact_mean
+```
 
+```
+## [1] 1
+```
+
+```r
 impact_median <- median(totalstepsperday$total_steps, na.rm = TRUE)/ median(stepsPerDayImputed$total_Steps)
 impact_median
+```
+
+```
+## [1] 0.9998896
 ```
 
 
@@ -216,17 +281,26 @@ whether a given date is a weekday or weekend day.**
 
 
 First, let's create a new factor variable in the dataset using the *weekdays* function.
-```{r}
+
+```r
 # Create variable
 imputedData$weekend <- as.factor(weekdays(imputedData$date) %in% c("Saturday", "Sunday"))
 # let's look at the first 3 rows of the resulting data
 head(imputedData, 3)
 ```
 
+```
+##       steps       date interval weekend
+## 1 1.7169811 2012-10-01        0   FALSE
+## 2 0.3396226 2012-10-01        5   FALSE
+## 3 0.1320755 2012-10-01       10   FALSE
+```
+
 
 Now, we calculate the mean number of steps for each interval, for both weekdays and weekends. We use the *aggregate* function again.
 
-```{r}
+
+```r
 stepsPerInterval2 <- aggregate(imputedData$steps, by = list(imputedData$interval, imputedData$weekend), mean)
 # to clean things up, we rename the columns of data frame generated
 names(stepsPerInterval2) <- c("interval", "weekend", "mean_steps")
@@ -239,7 +313,8 @@ the average number of steps taken, averaged across all weekday days or weekend d
 
 
 Now, we generate the plot, using the base plotting system. 
-```{r secondplot, fig.height = 4, fig.width = 6}
+
+```r
 par(mfrow = c(1, 2))
 # First plot
 plot(subset(stepsPerInterval2, weekend == FALSE)$mean_steps, xlab = "interval", ylab = "mean number of steps", main ="Weekdays", type = "l", col="blue", xaxt = "n", ylim = c(0, 250))
@@ -247,4 +322,6 @@ axis(1, at = at, labels = labels)
 plot(subset(stepsPerInterval2, weekend == TRUE)$mean_steps, xlab = "interval", ylab = "mean number. of steps", main ="Weekend", type = "l", col="blue", xaxt = "n", ylim = c(0, 250))
 axis(1, at = at, labels = labels)
 ```
+
+![plot of chunk secondplot](figure/secondplot-1.png) 
 

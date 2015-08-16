@@ -20,16 +20,6 @@ this dataset.
 The original questions for this assignment are in bold font below. 
 
 
-Let's load the required package(s) for this assignment:
-```{r}
-library(knitr)
-```
-
-
-```{r opt_chunk$set(echo = TRUE)}
-```
-
-
 # Loading and preprocessing the data    
 <br>
 Now, we load the data, and convert the date column to a date variable.  
